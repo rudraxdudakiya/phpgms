@@ -11,10 +11,15 @@ import About from "./components/About";
 import Contact from "./components/Contact";
 import ProductsPage from "./components/Products-Page";
 import Cart from "./components/Cart";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    useEffect(() => {
+    const saved = localStorage.getItem("theme") || "light";
+    document.body.setAttribute("data-theme", saved);
+  }, []);
+
   return (
     <Router>
       <Header setMobileMenuOpen={setMobileMenuOpen}/>

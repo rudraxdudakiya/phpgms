@@ -64,8 +64,7 @@ const Products = ({ products, isLoggedIn, expandedProduct, setExpandedProduct })
   };
 
   return (
-    <section className="relative container mx-auto py-2">
-      <h2 className="text-3xl font-bold text-center mb-8">Check Out Products</h2>
+    <section className="relative mx-auto py-2 dark:text-gray-100 dark:bg-gray-900">
 
       {/* Dim background if expanded */}
       <div
@@ -75,9 +74,9 @@ const Products = ({ products, isLoggedIn, expandedProduct, setExpandedProduct })
           <div
             key={product.id}
             onClick={() => setExpandedProduct(product)}
-            className="border rounded-lg p-4 shadow hover:shadow-lg transition duration-300 cursor-pointer"
+            className="border dark:text-gray-100 dark:bg-gray-800 rounded-lg p-4 shadow hover:shadow-lg transition duration-300 cursor-pointer"
           >
-            <span className="text-sm text-gray-500">{product.category}</span>
+            <span className="text-sm text-gray-500 dark:text-gray-100">{product.category}</span>
             <div className="flex justify-center my-4">
               <img className="w-32 h-32 object-contain" src={product.image} alt={product.name} />
             </div>
@@ -89,10 +88,10 @@ const Products = ({ products, isLoggedIn, expandedProduct, setExpandedProduct })
 
       {/* Expanded View Overlay */}
       {expandedProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center ">
           <div className="absolute inset-0 bg-black opacity-50"></div>
 
-          <div className="relative bg-white p-6 rounded-lg shadow-xl z-50 w-[90%] max-w-lg">
+          <div className="relative dark:text-gray-100 dark:bg-gray-800 bg-white p-6 rounded-lg shadow-xl z-50 w-[90%] max-w-lg">
             <button
               onClick={() => setExpandedProduct(null)}
               className="absolute top-2 right-2 text-xl text-gray-500 hover:text-red-600"
@@ -113,9 +112,9 @@ const Products = ({ products, isLoggedIn, expandedProduct, setExpandedProduct })
               <p className="text-sm text-gray-500 mb-3">Stock: {expandedProduct.stock}</p>
 
               <div className="flex justify-center items-center gap-2 mb-3">
-                <button onClick={() => handleDecrement(expandedProduct.id)} className="bg-gray-200 px-3">-</button>
+                <button onClick={() => handleDecrement(expandedProduct.id)} className="bg-gray-200 px-3 dark:bg-gray-500 rounded-sm">-</button>
                 <span>{quantities[expandedProduct.id]}</span>
-                <button onClick={() => handleIncrement(expandedProduct.id, expandedProduct.stock)} className="bg-gray-200 px-3">+</button>
+                <button onClick={() => handleIncrement(expandedProduct.id, expandedProduct.stock)} className="bg-gray-200 dark:bg-gray-500 rounded-sm px-3">+</button>
               </div>
 
               <button
