@@ -31,19 +31,6 @@ const Home = () => {
             />
           </div>
         </div>
-
-        {/* Custom Divider (SVG Waves) */}
-        <div className="relative -mt-16">
-          <svg
-            className="absolute bottom-0 left-0 w-full"
-            viewBox="0 0 1200 120"
-            preserveAspectRatio="none"
-          >
-            {/* <path d="M0,0V46.29c47.79..." opacity=".25" className="fill-yellow-100"></path>
-            <path d="M0,0V15.81..." opacity=".5" className="fill-yellow-200"></path>
-            <path d="M0,0V5.63..." className="fill-yellow-300"></path> */}
-          </svg>
-        </div>
       </section>
 
 

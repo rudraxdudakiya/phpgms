@@ -68,13 +68,13 @@ const Products = ({ products, isLoggedIn, expandedProduct, setExpandedProduct })
 
       {/* Dim background if expanded */}
       <div
-        className={`grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 transition-opacity duration-300 ${expandedProduct ? 'opacity-30 pointer-events-none select-none' : ''}`}
+        className={`grid ml-4 mr-4 mb-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 transition-opacity duration-300 ${expandedProduct ? 'opacity-30 pointer-events-none select-none' : ''}`}
       >
         {products.map((product) => (
           <div
             key={product.id}
             onClick={() => setExpandedProduct(product)}
-            className="border dark:text-gray-100 dark:bg-gray-800 rounded-lg p-4 shadow hover:shadow-lg transition duration-300 cursor-pointer"
+            className="border border-gray-300 dark:text-gray-100 dark:bg-gray-800 rounded-lg p-4 shadow hover:shadow-lg transition duration-300 cursor-pointer"
           >
             <span className="text-sm text-gray-500 dark:text-gray-100">{product.category}</span>
             <div className="flex justify-center my-4">

@@ -82,7 +82,7 @@ const Header = ({ setMobileMenuOpen }) => {
  return (
   <header
     className={clsx(
-      "section-navbar transition-all duration-700 ease-out transform",
+      "section-navbar transition-all duration-700 ease-out transform sticky top-0 z-50 w-full backdrop-blur-sm",
       animate ? "scale-100 opacity-100" : "scale-95 opacity-0"
     )}
   >
@@ -93,7 +93,7 @@ const Header = ({ setMobileMenuOpen }) => {
     )}
 
     {/* Top Bar */}
-    <section className="bg-gray-300 dark:bg-gray-800 py-2 border-b border-gray-200 dark:border-gray-700 hidden md:block">
+    <section className="bg-gray-400 dark:bg-gray-800 py-2 border-b border-gray-200 dark:border-gray-700 hidden md:block">
       <div className="container mx-auto flex justify-between items-center text-sm px-4">
         <p className="text-gray-700 dark:text-gray-300">
           🚚 Free Shipping, 30-Day Return or Refund Guarantee.
@@ -128,7 +128,7 @@ const Header = ({ setMobileMenuOpen }) => {
     </section>
 
     {/* Navbar */}
-    <div className=" mx-auto px-2 py-4 flex justify-between items-center relative bg-white dark:bg-gray-950">
+    <div className=" mx-auto px-2 py-4 flex justify-between items-center relative bg-gray-200 dark:bg-gray-950">
       {/* Logo */}
       <Link to="/">
         <img
@@ -144,7 +144,7 @@ const Header = ({ setMobileMenuOpen }) => {
           <Link
             key={link.name}
             to={link.to}
-className="text-gray-700 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 hover:underline underline-offset-4"
+            className="text-gray-700 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 hover:underline underline-offset-4"
           >
             {link.name}
           </Link>
