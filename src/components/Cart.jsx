@@ -21,6 +21,39 @@ const Cart = () => {
       });
   }, []);
 
+  const updateQuantity = async (cartId, newQuantity) => {
+    if (newQuantity < 1) return;
+    try {
+      const res = await fetch("http://localhost/php/gms/backend/update-cart-quantity.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ cart_id: cartId, quantity: newQuantity }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setCartItems(prevItems =>
+          prevItems.map(item =>
+            item.cart_id === cartId ? { ...item, quantity: newQuantity } : item
+          )
+        );
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: data.message || "Failed to update quantity.",
+        });
+      }
+    } catch (err) {
+      console.error("Error updating quantity:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Network Error",
+        text: "Something went wrong while updating quantity.",
+      });
+    }
+  };
+
   const handleRemoveItem = async (cartId) => {
     const confirm = await Swal.fire({
       title: "Are you sure?",
@@ -32,9 +65,7 @@ const Cart = () => {
       confirmButtonText: "Yes",
       cancelButtonText: "No"
     });
-
     if (!confirm.isConfirmed) return;
-
     try {
       const res = await fetch("http://localhost/php/gms/backend/remove-from-cart.php", {
         method: "POST",
@@ -42,7 +73,6 @@ const Cart = () => {
         credentials: "include",
         body: JSON.stringify({ cart_id: cartId }),
       });
-
       const data = await res.json();
       if (data.success) {
         setCartItems((prev) => prev.filter((item) => item.cart_id !== cartId));
@@ -80,59 +110,80 @@ const Cart = () => {
   };
 
   return (
-    <div className="mx-auto px-4 py-6 text-gray-800 dark:text-gray-100 dark:bg-gray-800">
+    <div className="px-2 py-6 - text-gray-800 dark:text-gray-100 dark:bg-gray-800">
       <h2 className="text-2xl font-bold mb-6 text-center sm:text-left">🛒 Your Shopping Cart</h2>
 
-      {loading ? (
-        <div className="flex justify-center py-20">
-          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-        </div>
-      ) : cartItems.length === 0 ? (
-        <p className="text-gray-500 dark:text-gray-400 text-center">Your cart is empty.</p>
-      ) : (
-        <div className="space-y-6">
-          {cartItems.map((item) => (
-            <div
-              key={item.cart_id}
-              className="flex flex-col sm:flex-row items-center justify-between border border-gray-300 dark:border-gray-600 p-4 rounded shadow-sm gap-4 bg-white dark:bg-gray-700"
-            >
-              <div className="flex items-center gap-4 w-full sm:w-2/3">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-24 h-24 object-contain rounded"
-                />
-                <div>
-                  <h3 className="font-semibold text-lg text-gray-900 dark:text-white">{item.name}</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{item.category}</p>
-                  <p className="text-sm text-gray-700 dark:text-gray-200">
-                    ₹{item.price} × {item.quantity}
-                  </p>
-                </div>
+      <div className="ml-10 mr-10 flex flex-col md:flex-row md:items-start gap-8">
+        <div className="flex-1 min-w-0">
+          <div className="space-y-6 max-h-[70vh] overflow-y-auto pr-2">
+            {loading ? (
+              <div className="flex justify-center py-20">
+                <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
               </div>
-
-              <div className="text-lg font-semibold text-center text-gray-800 dark:text-white">
-                ₹{item.price * item.quantity}
-              </div>
-
-              <div className="w-full md:w-1/3 flex justify-center md:justify-end mt-3 md:mt-0">
-                <button
-                  onClick={() => handleRemoveItem(item.cart_id)}
-                  className="flex flex-col items-center px-3 py-2 rounded bg-red-100 dark:bg-red-800 hover:bg-red-200 dark:hover:bg-red-700 text-red-600 dark:text-red-300 transition-all duration-300 hover:scale-105"
+            ) : cartItems.length === 0 ? (
+              <p className="text-gray-500 dark:text-gray-400 text-center py-8">Your cart is empty.</p>
+            ) : (
+              cartItems.map((item) => (
+                <div
+                  key={item.cart_id}
+                  className="flex flex-col sm:flex-row items-center justify-between border border-gray-300 dark:border-gray-600 p-4 rounded shadow-sm gap-4 bg-white dark:bg-gray-700"
                 >
-                  <FaTrashArrowUp size={20} />
-                  <span className="text-xs font-medium mt-1 dark:text-white">Remove</span>
-                </button>
-              </div>
-            </div>
-          ))}
+                  <div className="flex items-center gap-4 w-full sm:w-2/3">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-24 h-24 object-contain rounded"
+                    />
+                    <div>
+                      <h3 className="font-semibold text-lg text-gray-900 dark:text-white">{item.name}</h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{item.category}</p>
+                      <p className="text-sm text-gray-700 dark:text-gray-200">
+                        ₹{item.price} × {item.quantity}
+                      </p>
+                    </div>
+                  </div>
 
-          {/* Bill Summary */}
-          <div className="flex justify-end mt-8">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => updateQuantity(item.cart_id, item.quantity - 1)}
+                      className="px-3 py-1 rounded bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 disabled:opacity-50"
+                      disabled={item.quantity <= 1}
+                    >
+                      -
+                    </button>
+                    <span className="min-w-[24px] text-center">{item.quantity}</span>
+                    <button
+                      onClick={() => updateQuantity(item.cart_id, item.quantity + 1)}
+                      className="px-3 py-1 rounded bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500"
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  <div className="text-lg font-semibold text-center text-gray-800 dark:text-white">
+                    ₹{(item.price * item.quantity).toFixed(2)}
+                  </div>
+
+                  <div className="w-full md:w-1/3 flex justify-center md:justify-end mt-3 md:mt-0">
+                    <button
+                      onClick={() => handleRemoveItem(item.cart_id)}
+                      className="flex flex-col items-center px-3 py-2 rounded bg-red-100 dark:bg-red-800 hover:bg-red-200 dark:hover:bg-red-700 text-red-600 dark:text-red-300 transition-all duration-300 hover:scale-105"
+                    >
+                      <FaTrashArrowUp size={20} />
+                      <span className="text-xs font-medium mt-1 dark:text-white">Remove</span>
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+        
+       <div className="flex justify-end mt-8">
             <div className="w-full sm:w-96 bg-gray-100 dark:bg-gray-900 p-6 rounded-lg shadow-md space-y-4 text-sm sm:text-base">
               <div className="flex justify-between">
                 <span className="text-gray-600 dark:text-gray-300">Subtotal:</span>
-                <span className="font-medium text-gray-800 dark:text-white">₹{subtotal}</span>
+                <span className="font-medium text-gray-800 dark:text-white">₹{subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600 dark:text-gray-300">Delivery Charges:</span>
@@ -145,7 +196,7 @@ const Cart = () => {
               <hr className="border-gray-300 dark:border-gray-700" />
               <div className="flex justify-between font-semibold text-lg">
                 <span className="text-black dark:text-white">Total:</span>
-                <span className="text-black dark:text-white">₹{total}</span>
+                <span className="text-black dark:text-white">₹{total.toFixed(2)}</span>
               </div>
 
               <button
@@ -156,8 +207,7 @@ const Cart = () => {
               </button>
             </div>
           </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 };
